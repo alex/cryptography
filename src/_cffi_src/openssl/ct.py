@@ -86,8 +86,9 @@ typedef enum {
     SCT_SOURCE_OCSP_STAPLED_RESPONSE
 } sct_source_t;
 
-/* OpenSSL compiled with `no-ct` still defines the `SCT` struct. */
-#if !defined(OPENSSL_NO_CT)
+/* OpenSSL compiled with `no-ct` still defines the `SCT` struct. BoringSSL is
+   `no-ct`, but doesn't define the struct. */
+#if !defined(OPENSSL_NO_CT) || defined(OPENSSL_IS_BORINGSSL)
 typedef void SCT;
 #endif
 
