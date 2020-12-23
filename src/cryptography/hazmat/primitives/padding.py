@@ -7,7 +7,7 @@ import abc
 
 from cryptography import utils
 from cryptography.exceptions import AlreadyFinalized
-from cryptography.hazmat.bindings._padding import lib
+from cryptography.hazmat.bindings import _rust
 
 
 class PaddingContext(metaclass=abc.ABCMeta):
@@ -139,7 +139,7 @@ class _PKCS7UnpaddingContext(object):
 
     def finalize(self):
         result = _byte_unpadding_check(
-            self._buffer, self.block_size, lib.Cryptography_check_pkcs7_padding
+            self._buffer, self.block_size, _rust.check_pkcs7_padding
         )
         self._buffer = None
         return result
@@ -198,7 +198,7 @@ class _ANSIX923UnpaddingContext(object):
         result = _byte_unpadding_check(
             self._buffer,
             self.block_size,
-            lib.Cryptography_check_ansix923_padding,
+            _rust.check_ansix923_padding,
         )
         self._buffer = None
         return result

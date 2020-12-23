@@ -28,23 +28,6 @@ with open(os.path.join(src_dir, "cryptography", "__about__.py")) as f:
 # `setup_requirements` must be kept in sync with `pyproject.toml`
 setup_requirements = ["cffi>=1.12", "setuptools-rust>=0.11.4"]
 
-if os.environ.get("CRYPTOGRAPHY_DONT_BUILD_RUST"):
-    rust_extensions = []
-else:
-    rust_extensions = [
-        RustExtension(
-            "_rust",
-            "src/rust/Cargo.toml",
-            py_limited_api=True,
-            # Enable abi3 mode if we're not using PyPy.
-            features=(
-                []
-                if platform.python_implementation() == "PyPy"
-                else ["pyo3/abi3-py36"]
-            ),
-        )
-    ]
-
 with open(os.path.join(base_dir, "README.rst")) as f:
     long_description = f.read()
 
@@ -126,9 +109,20 @@ try:
         ext_package="cryptography.hazmat.bindings",
         cffi_modules=[
             "src/_cffi_src/build_openssl.py:ffi",
-            "src/_cffi_src/build_padding.py:ffi",
         ],
-        rust_extensions=rust_extensions,
+        rust_extensions=[
+            RustExtension(
+                "_rust",
+                "src/rust/Cargo.toml",
+                py_limited_api=True,
+                # Enable abi3 mode if we're not using PyPy.
+                features=(
+                    []
+                    if platform.python_implementation() == "PyPy"
+                    else ["pyo3/abi3-py36"]
+                ),
+            )
+        ],
     )
 except:  # noqa: E722
     # Note: This is a bare exception that re-raises so that we don't interfere
